@@ -1,6 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { AppDataSource } from '@config/database';
-import { LoanApplication } from '@entities/LoanApplication';
+import { LoanService } from '../services/LoanService';
 import { authenticateApiKey } from '../middleware/auth';
 
 const router = Router();
@@ -90,46 +89,22 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
     const { applicantName, propertyAddress, creditScore, monthlyIncome, requestedAmount, loanTermMonths } = req.body;
     
     // Validate required fields
-    if (!applicantName || !propertyAddress || !creditScore || !monthlyIncome || !requestedAmount || !loanTermMonths) {
-      res.status(400).json({ error: 'All fields are required' });
+    const validation = LoanService.validateLoanApplicationData(req.body);
+    if (!validation.isValid) {
+      res.status(400).json({ error: validation.error });
       return;
     }
     
-    // Determine crime grade (hardcoded to F for now as per requirements)
-    const crimeGrade = 'F';
-    
-    // Calculate eligibility based on the rules
-    const monthlyPayment = requestedAmount / loanTermMonths;
-    const requiredIncome = monthlyPayment * 1.5;
-    
-    let eligible = false;
-    let reason = '';
-    
-    if (creditScore < 700) {
-      reason = 'Credit score too low';
-    } else if (monthlyIncome <= requiredIncome) {
-      reason = 'Monthly income too low';
-    } else if (crimeGrade === 'F') {
-      reason = 'Crime grade too low';
-    } else {
-      eligible = true;
-      reason = 'Passed all checks';
-    }
-    
-    // Create loan application with eligibility result
-    const loanApplication = AppDataSource.getRepository(LoanApplication).create({
+    // Create loan application using the service
+    const result = await LoanService.createLoanApplication({
       applicantName,
       propertyAddress,
       creditScore,
       monthlyIncome,
       requestedAmount,
-      loanTermMonths,
-      eligible,
-      reason,
-      crimeGrade
+      loanTermMonths
     });
     
-    const result = await AppDataSource.getRepository(LoanApplication).save(loanApplication);
     res.status(201).json(result);
   } catch (error) {
     next(error);
@@ -193,9 +168,7 @@ router.get('/:id', async (req: Request, res: Response, next: NextFunction): Prom
       return;
     }
     
-    const application = await AppDataSource.getRepository(LoanApplication).findOne({
-      where: { id }
-    });
+    const application = await LoanService.getLoanApplicationById(id);
     
     if (!application) {
       res.status(404).json({ error: 'Loan application not found' });
