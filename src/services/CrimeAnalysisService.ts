@@ -72,6 +72,40 @@ export class CrimeAnalysisService {
   }
 
   /**
+   * Analyze crime for agent use - skips website scraping
+   */
+  public static async analyzeCrimeForAgent(address: string): Promise<CrimeAnalysisResult> {
+    try {
+      console.log('Agent analysis: skipping website scraping, using alternative methods...');
+      
+      // Try geocoding and alternative data sources
+      const geocodeResult = await this.geocodeAddress(address);
+      if (geocodeResult) {
+        return await this.getCrimeDataFromCoordinates(geocodeResult.latitude, geocodeResult.longitude);
+      }
+      
+      // Final fallback - return default grade
+      return {
+        crimeGrade: 'F',
+        crimeScore: 0,
+        confidence: 0,
+        source: 'fallback',
+        error: 'Unable to determine crime grade for address'
+      };
+      
+    } catch (error) {
+      console.error('Error analyzing crime for agent:', error);
+      return {
+        crimeGrade: 'F',
+        crimeScore: 0,
+        confidence: 0,
+        source: 'error',
+        error: error instanceof Error ? error.message : 'Unknown error'
+      };
+    }
+  }
+
+  /**
    * Scrape crime grade from CrimeGrade.org website
    */
   private static async getCrimeGradeFromWebsite(address: string): Promise<CrimeAnalysisResult | null> {

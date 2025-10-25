@@ -95,6 +95,62 @@ const options: swaggerJsdoc.Options = {
               description: 'Error message'
             }
           }
+        },
+        CrimeGradeResult: {
+          type: 'object',
+          required: ['address', 'overall_grade'],
+          properties: {
+            address: {
+              type: 'string',
+              description: 'The address that was graded'
+            },
+            zip: {
+              type: 'string',
+              description: 'ZIP code of the address (optional)'
+            },
+            overall_grade: {
+              type: 'string',
+              enum: ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F'],
+              description: 'Overall crime safety grade for the address'
+            },
+            components: {
+              type: 'object',
+              properties: {
+                violent_crime: {
+                  type: 'string',
+                  enum: ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F'],
+                  description: 'Grade for violent crime in the area'
+                },
+                property_crime: {
+                  type: 'string',
+                  enum: ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F'],
+                  description: 'Grade for property crime in the area'
+                }
+              }
+            },
+            notes: {
+              type: 'string',
+              description: 'Additional notes about the crime analysis'
+            },
+            evidence: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  source: {
+                    type: 'string',
+                    description: 'Source of the evidence'
+                  },
+                  snippet: {
+                    type: 'string',
+                    description: 'Evidence snippet or description'
+                  }
+                },
+                required: ['snippet']
+              },
+              description: 'Evidence supporting the crime grade'
+            }
+          }
         }
       }
     },

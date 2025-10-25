@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import 'reflect-metadata';
 import express from 'express';
 import { initializeDatabase } from '@config/database';
@@ -7,6 +8,7 @@ import homeRoutes from './routes/home';
 import healthRoutes from './routes/health';
 import loanApplicationRoutes from './routes/loanApplications';
 import crimeAnalysisRoutes from './routes/crimeAnalysis';
+import agentRoutes from './routes/agent';
 import { errorHandler, notFoundHandler } from './middleware/errorHandlers';
 
 const app = express();
@@ -24,6 +26,8 @@ app.use('/', homeRoutes);
 app.use('/', healthRoutes);
 app.use('/loan', loanApplicationRoutes);
 app.use('/crime-analysis', crimeAnalysisRoutes);
+app.use("/agent", agentRoutes);
+
 
 // Error handling middleware
 app.use(errorHandler);
