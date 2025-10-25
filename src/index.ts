@@ -6,6 +6,7 @@ import { setupSwagger } from '@config/swagger';
 import homeRoutes from './routes/home';
 import healthRoutes from './routes/health';
 import loanApplicationRoutes from './routes/loanApplications';
+import crimeAnalysisRoutes from './routes/crimeAnalysis';
 import { errorHandler, notFoundHandler } from './middleware/errorHandlers';
 
 const app = express();
@@ -22,6 +23,7 @@ setupSwagger(app);
 app.use('/', homeRoutes);
 app.use('/', healthRoutes);
 app.use('/loan', loanApplicationRoutes);
+app.use('/crime-analysis', crimeAnalysisRoutes);
 
 // Error handling middleware
 app.use(errorHandler);

@@ -1,5 +1,6 @@
 import { AppDataSource } from '@config/database';
 import { LoanApplication } from '@entities/LoanApplication';
+import { CrimeAnalysisService } from './CrimeAnalysisService';
 
 export interface LoanApplicationData {
   applicantName: string;
@@ -20,9 +21,10 @@ export class LoanService {
   /**
    * Calculate loan eligibility based on credit score, income, and crime grade
    */
-  public static calculateEligibility(data: LoanApplicationData): EligibilityResult {
-    // Determine crime grade (hardcoded to F for now as per requirements)
-    const crimeGrade = 'F';
+  public static async calculateEligibility(data: LoanApplicationData): Promise<EligibilityResult> {
+    // Analyze crime grade for the property address
+    const crimeAnalysis = await CrimeAnalysisService.analyzeCrimeForAddress(data.propertyAddress);
+    const crimeGrade = crimeAnalysis.crimeGrade;
     
     // Calculate eligibility based on the rules
     const monthlyPayment = data.requestedAmount / data.loanTermMonths;
@@ -53,7 +55,7 @@ export class LoanService {
    * Create a new loan application with eligibility evaluation
    */
   public static async createLoanApplication(data: LoanApplicationData): Promise<LoanApplication> {
-    const eligibility = this.calculateEligibility(data);
+    const eligibility = await this.calculateEligibility(data);
     
     const loanApplication = AppDataSource.getRepository(LoanApplication).create({
       applicantName: data.applicantName,
