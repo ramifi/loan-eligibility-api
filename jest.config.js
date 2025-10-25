@@ -6,6 +6,10 @@ module.exports = {
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
+  moduleNameMapper: {
+    '^@config/(.*)$': '<rootDir>/src/config/$1',
+    '^@entities/(.*)$': '<rootDir>/src/entities/$1',
+  },
   collectCoverageFrom: [
     'src/**/*.ts',
     '!src/**/*.d.ts',
