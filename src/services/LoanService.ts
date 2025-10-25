@@ -1,6 +1,7 @@
 import { AppDataSource } from '@config/database';
 import { LoanApplication } from '@entities/LoanApplication';
-import { CrimeAnalysisService } from './CrimeAnalysisService';
+//import { CrimeAnalysisService } from './CrimeAnalysisService';
+import { gradeAddressWithAgent } from './AgentService';
 
 export interface LoanApplicationData {
   applicantName: string;
@@ -22,9 +23,13 @@ export class LoanService {
    * Calculate loan eligibility based on credit score, income, and crime grade
    */
   public static async calculateEligibility(data: LoanApplicationData): Promise<EligibilityResult> {
+   
+    const crimeAnalysis = await gradeAddressWithAgent(data.propertyAddress);
+    const crimeGrade = crimeAnalysis.overall_grade;
+
     // Analyze crime grade for the property address
-    const crimeAnalysis = await CrimeAnalysisService.analyzeCrimeForAddress(data.propertyAddress);
-    const crimeGrade = crimeAnalysis.crimeGrade;
+   // const crimeAnalysis = await CrimeAnalysisService.analyzeCrimeForAddress(data.propertyAddress);
+   // const crimeGrade = crimeAnalysis.crimeGrade;
     
     // Calculate eligibility based on the rules
     const monthlyPayment = data.requestedAmount / data.loanTermMonths;
