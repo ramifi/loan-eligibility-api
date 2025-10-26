@@ -125,6 +125,25 @@ npm test -- --coverage
 ### Agent Endpoints
 - `POST /agent/grade-address` - AI-powered address grading
 
+### Crime Grade Service
+The `CrimeGradeService` provides database-backed crime grade lookups. Key methods:
+
+- `getCrimeGradeByAddress(address: string)` - Get crime grade for any address by extracting zip code
+- `getCrimeGradeByZipCode(zipCode: string)` - Get crime grade directly by zip code  
+- `getAllCrimeGradesByZipCode(zipCode: string)` - Get all crime grade records for a zip code
+
+**Example usage:**
+```typescript
+import { CrimeGradeService } from './services/CrimeGradeService';
+
+// Grade an address
+const result = await CrimeGradeService.getCrimeGradeByAddress('123 Main St, New York, NY 10001');
+// Returns: { address, zip, overall_grade, components, notes, evidence }
+
+// Grade by zip code
+const result = await CrimeGradeService.getCrimeGradeByZipCode('10001');
+```
+
 ## Architecture & Design Decisions
 
 ### Overall Architecture
