@@ -1,12 +1,13 @@
 import { DataSource } from 'typeorm';
 import { LoanApplication } from '@entities/LoanApplication';
+import { CrimeGrade } from '@entities/CrimeGrade';
 
 export const AppDataSource = new DataSource({
   type: 'better-sqlite3',
   database: process.env['DATABASE_PATH'] || 'db/loan_eligibility.db',
   synchronize: false, // Disabled in favor of migrations
   logging: process.env['NODE_ENV'] === 'development',
-  entities: [LoanApplication],
+  entities: [LoanApplication, CrimeGrade],
   migrations: ['src/migrations/*.ts'],
   migrationsTableName: 'migrations',
   subscribers: ['src/subscribers/*.ts'],

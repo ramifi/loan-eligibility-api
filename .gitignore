@@ -23,3 +23,6 @@ coverage/
 *.db
 *.sqlite
 *.sqlite3
+# Generated CSV files
+*-export.csv
+crime-export.csv

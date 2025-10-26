@@ -256,7 +256,28 @@ npm run format           # Format code
 # Database
 npm run migration:run    # Run database migrations
 npm run migration:revert # Revert last migration
+
+# CSV Generation
+npm run generate:crime-csv # Generate crime CSV file
 ```
+
+## CSV Generation Tool
+
+The project includes a command-line script to generate crime analysis CSV files similar to CrimeGrade.org exports.
+
+### Quick Examples
+
+**Single address:**
+```bash
+npm run generate:crime-csv "123 Main St, New York, NY 10001"
+```
+
+**Multiple addresses from file:**
+```bash
+npm run generate:crime-csv -f sample-addresses.txt -o results.csv
+```
+
+For detailed usage, see [CRIME_CSV_GENERATOR.md](./CRIME_CSV_GENERATOR.md).
 
 ## Environment Variables
 
